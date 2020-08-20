@@ -167,7 +167,7 @@ class PhotoManager {
     return _plugin.getOriginBytes(id);
   }
 
-  static _getThumbDataWithId(
+  static Future<Uint8List> getThumbDataWithId(
     String id, {
     int width = 150,
     int height = 150,
@@ -251,6 +251,11 @@ class PhotoManager {
   static Future<String> _getMediaUrl(AssetEntity assetEntity) {
     assert(Platform.isAndroid || Platform.isIOS || Platform.isMacOS);
     return _plugin.getMediaUrl(assetEntity);
+  }
+
+  static Future<bool> _isLocallyAvailable(AssetEntity assetEntity) {
+    assert(Platform.isIOS);
+    return _plugin.isLocallyAvailable(assetEntity);
   }
 
   static Future<List<AssetPathEntity>> _getSubPath(

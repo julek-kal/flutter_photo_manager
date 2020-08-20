@@ -239,7 +239,7 @@ class Plugin with BasePlugin, IosPlugin, AndroidPlugin {
   }
 
   Future<bool> cacheOriginBytes(bool cache) {
-    return _channel.invokeMethod("cacheOriginBytes");
+    return _channel.invokeMethod("cacheOriginBytes", {"cache": cache});
   }
 
   Future<String> getTitleAsync(AssetEntity assetEntity) async {
@@ -255,11 +255,18 @@ class Plugin with BasePlugin, IosPlugin, AndroidPlugin {
     return "";
   }
 
-  Future<String> getMediaUrl(AssetEntity assetEntity) {
-    return _channel.invokeMethod("getMediaUrl", {
-      "id": assetEntity.id,
-      "type": assetEntity.typeInt,
-    });
+  Future<String> getMediaUrl(AssetEntity assetEntity) async {
+    try {
+      return await _channel.invokeMethod("getMediaUrl", {
+        "id": assetEntity.id,
+        "type": assetEntity.typeInt,
+      });
+    }
+    on PlatformException catch(e) {
+      print('PlatformException: $e');
+    }
+
+    return null;
   }
 
   Future<List<AssetPathEntity>> getSubPathEntities(
@@ -409,6 +416,20 @@ mixin IosPlugin on BasePlugin {
     }
 
     return true;
+  }
+
+  Future<bool> isLocallyAvailable(AssetEntity assetEntity) async {
+    try {
+      return await _channel.invokeMethod("isLocallyAvailable", {
+        "id": assetEntity.id,
+        "type": assetEntity.typeInt,
+      });
+    }
+    on PlatformException catch(e) {
+      print('PlatformException: $e');
+    }
+
+    return false;
   }
 }
 

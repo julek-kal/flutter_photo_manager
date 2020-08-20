@@ -2,8 +2,7 @@ part of '../photo_manager.dart';
 
 /// asset entity, for entity info.
 class AssetPathEntity {
-  static Future<AssetPathEntity> fromId(String id,
-      {FilterOptionGroup filterOption}) async {
+  static Future<AssetPathEntity> fromId(String id, {FilterOptionGroup filterOption}) async {
     filterOption ??= FilterOptionGroup();
     final entity = AssetPathEntity()..id = id;
     await entity.refreshPathProperties();
@@ -64,8 +63,7 @@ class AssetPathEntity {
   AssetPathEntity({this.id, this.name, this.filterOption});
 
   Future<void> refreshPathProperties({DateTimeCond dateTimeCond}) async {
-    dateTimeCond ??=
-        this.filterOption.dateTimeCond.copyWith(max: DateTime.now());
+    dateTimeCond ??= this.filterOption.dateTimeCond.copyWith(max: DateTime.now());
     final result = await PhotoManager.fetchPathProperties(this, dateTimeCond);
     if (result != null) {
       this.assetCount = result.assetCount;
@@ -95,8 +93,7 @@ class AssetPathEntity {
     assert(this.albumType == 1, "Just album type can get asset.");
     assert(start >= 0, "The start must better than 0.");
     assert(end > start, "The end must better than start.");
-    return PhotoManager._getAssetWithRange(
-        entity: this, start: start, end: end);
+    return PhotoManager._getAssetWithRange(entity: this, start: start, end: end);
   }
 
   /// all of asset, It is recommended to use the latest api (pagination) [getAssetListPaged].
@@ -249,8 +246,7 @@ class AssetEntity {
   /// This contains all the EXIF information, but in contrast, `Image` widget may not be able to display pictures.
   ///
   /// Usually, you can use the [file] attribute
-  Future<File> get originFile async =>
-      PhotoManager._getFileWithId(id, isOrigin: true);
+  Future<File> get originFile async => PhotoManager._getFileWithId(id, isOrigin: true);
 
   /// The asset's bytes.
   ///
@@ -266,7 +262,7 @@ class AssetEntity {
   Future<Uint8List> get originBytes => PhotoManager._getOriginBytes(this);
 
   /// thumb data , for display
-  Future<Uint8List> get thumbData => PhotoManager._getThumbDataWithId(id);
+  Future<Uint8List> get thumbData => PhotoManager.getThumbDataWithId(id);
 
   /// get thumb with size
   Future<Uint8List> thumbDataWithSize(
@@ -277,14 +273,16 @@ class AssetEntity {
   }) {
     assert(width > 0 && height > 0, "The width and height must better 0.");
     assert(format != null, "The format must not be null.");
+
     assert(quality > 0 && quality <= 100, "The quality must between 0 and 100");
+    assert(quality > 0 && quality <= 100, "The qulity must between 0 and 100");
 
     /// Return null if asset is audio or other type, because they don't have such a thing.
     if (type == AssetType.audio || type == AssetType.other) {
       return null;
     }
 
-    return PhotoManager._getThumbDataWithId(
+    return PhotoManager.getThumbDataWithId(
       id,
       width: width,
       height: height,
@@ -325,11 +323,16 @@ class AssetEntity {
   ///
   /// Android: `content://media/external/video/media/894857`
   Future<String> getMediaUrl() {
-    if (type == AssetType.video || type == AssetType.audio) {
-      return PhotoManager._getMediaUrl(this);
-    }
+    //if (type == AssetType.video || type == AssetType.audio) {
+    return PhotoManager._getMediaUrl(this);
+    //}
 
-    return null;
+    //return null;
+  }
+
+  /// Support for iCloud
+  Future<bool> isLocallyAvailable() {
+    return PhotoManager._isLocallyAvailable(this);
   }
 
   /// Orientation of android MediaStore. See [ORIENTATION](https://developer.android.com/reference/android/provider/MediaStore.MediaColumns#ORIENTATION)
