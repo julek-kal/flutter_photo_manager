@@ -40,7 +40,7 @@
 
 - (PHAssetCollection *)getRecentCollection {
     if (PHPhotoLibrary.authorizationStatus == PHAuthorizationStatusAuthorized) {
-        PHFetchResult<PHAssetCollection *> *result = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeSmartAlbum subtype:PHAssetCollectionSubtypeAlbumRegular options:nil];
+        PHFetchResult<PHAssetCollection *> *result = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeSmartAlbum subtype:PHAssetCollectionSubtypeAny options:nil];
 
         for (PHAssetCollection *collection in result) {
             if (collection.assetCollectionSubtype == PHAssetCollectionSubtypeSmartAlbumUserLibrary) {
